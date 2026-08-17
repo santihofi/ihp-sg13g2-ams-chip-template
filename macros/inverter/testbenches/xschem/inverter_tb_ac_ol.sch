@@ -13,8 +13,8 @@ ypos2=2
 divy=5
 subdivy=1
 unity=1
-x1=-1
-x2=10
+x1=-2.65
+x2=8.35
 divx=5
 subdivx=8
 xlabmag=1.0
@@ -34,8 +34,8 @@ ypos2=2
 divy=5
 subdivy=4
 unity=1
-x1=-1
-x2=10
+x1=-2.65
+x2=8.35
 divx=5
 subdivx=8
 xlabmag=1.0
@@ -63,18 +63,49 @@ N 1260 -760 1260 -740 {lab=GND}
 N 1360 -760 1360 -740 {lab=GND}
 N 1120 -940 1120 -880 {lab=VDD}
 N 1120 -800 1120 -740 {lab=GND}
-C {devices/code_shown.sym} 60 -1450 0 0 {name=NGSPICE
+C {devices/code_shown.sym} 10 -1730 0 0 {name=NGSPICE
 only_toplevel=true 
 value="
+
+* \{% set NL_raw %\}
+
+* \{% endset %\}
+* \{% set NL = NL_raw | replace('*', '') %\}
+
+* \{% if True %\}
+
+* ==============================================
+* this section inserts chipify parameters
+* ==============================================
+
+* \{\{ NL \}\}.param VDD = \{\{ VDD \}\}
+* \{\{ NL \}\}.temp = \{\{ temp \}\}
+* \{\{ NL \}\}.param Cload = \{\{ Cload \}\}
+* \{\{ NL \}\}.param Rload = \{\{ Rload \}\}
+* \{\{ NL \}\}.param Vcm = \{\{ Vcm \}\}
+
+* \{% else %\}
+
+* ==============================================
+* parameter definition for manual execution 
+* begins here
+* ==============================================
+
 .include ../../../netlist/pex/inverter_magic_pex_3.spice
 .param VDD=1.5
 .param Vcm=VDD/2
-.param temp=27
+.temp=27
 .param Cload=10p
 .param Rload=1k
+
+* \{% endif %\}
+* ==============================================
+* simulator commands, common for manual
+* execution and chipify
+* ==============================================
+
 .options savecurrents klu method=gear reltol=1e-4 abstol=1e-15 gmin=1e-15
 .control
-
 save all
 
 set wr_vecnames
@@ -96,14 +127,9 @@ ac dec 101 $&const.f_min $&const.f_max
 remzerovec
 write @schname\\\\.raw
 
-* Plotting
 let Aol = v(vout)/v(vin)		
 let Aol_dB = vdb(Aol)
 let Aol_arg = 180/PI*cphase(Aol)
-
-plot Aol_dB ylabel 'Magnitude'
-plot Aol_arg ylabel 'Phase'
-plot Aol_dB Aol_arg ylabel 'Magnitude, Phase'
 
 * Measurements
 * DC open-loop gain
@@ -124,11 +150,23 @@ meas ac arg_0dB find Aol_arg when Aol_dB=0
 let PM = 180-abs(arg_0dB)
 print PM
 
+* ==============================================
+* Post processing, only manual execution
+* ==============================================
+* \{% if False %\}
+
+* Plotting
+plot Aol_dB ylabel 'Magnitude'
+plot Aol_arg ylabel 'Phase'
+plot Aol_dB Aol_arg ylabel 'Magnitude, Phase'
+
 * Write Data
 unset appendwrite
 set wr_vecnames
 set wr_singlescale
 wrdata ../plot_simulations/data/@schname\\\\.txt v(Aol_dB) v(Aol_arg)
+
+* \{% endif %\}
 
 *quit
 .endc

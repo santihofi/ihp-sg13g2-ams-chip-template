@@ -67,9 +67,34 @@ N 1260 -760 1260 -740 {lab=GND}
 N 1380 -760 1380 -740 {lab=GND}
 N 1100 -940 1100 -880 {lab=VDD}
 N 1100 -800 1100 -740 {lab=GND}
-C {devices/code_shown.sym} 80 -1370 0 0 {name=NGSPICE
+C {devices/code_shown.sym} 20 -1720 0 0 {name=NGSPICE
 only_toplevel=true 
 value="
+
+* \{% set NL_raw %\}
+
+* \{% endset %\}
+* \{% set NL = NL_raw | replace('*', '') %\}
+
+* \{% if True %\}
+
+* ==============================================
+* this section inserts chipify parameters
+* ==============================================
+
+* \{\{ NL \}\}.param VDD = \{\{ VDD \}\}
+* \{\{ NL \}\}.param temp = \{\{ temp \}\}
+* \{\{ NL \}\}.param Cload = \{\{ Cload \}\}
+* \{\{ NL \}\}.param Rload = \{\{ Rload \}\}
+* \{\{ NL \}\}.param Vcm = \{\{ Vcm \}\}
+
+* \{% else %\}
+
+* ==============================================
+* parameter definition for manual execution 
+* begins here
+* ==============================================
+
 .include ../../../netlist/pex/inverter_magic_pex_3.spice
 .param VDD=1.5
 .csparam VDD=VDD
@@ -77,6 +102,13 @@ value="
 .param temp=27
 .param Cload=10p
 .param Rload=1k
+
+* \{% endif %\}
+* ==============================================
+* simulator commands, common for manual
+* execution and chipify
+* ==============================================
+
 .options savecurrents klu method=gear reltol=1e-4 abstol=1e-15 gmin=1e-15
 .control
 
@@ -91,6 +123,11 @@ set appendwrite
 * Transient Analysis
 tran 1u 5m
 write @schname\\\\.raw
+
+* ==============================================
+* Post processing, only manual execution
+* ==============================================
+* \{% if False %\}
 
 * Plotting
 plot vin vout
@@ -114,6 +151,8 @@ unset appendwrite
 set wr_vecnames
 set wr_singlescale
 wrdata ../plot_simulations/data/@schname\\\\.txt v(vin) v(vout)
+
+* \{% endif %\}
 
 *quit
 .endc

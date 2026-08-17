@@ -1,0 +1,23 @@
+parameters:
+  temp: [22, -40, 100]
+  VDD: [1.5, 1.45, 1.55]
+  Cload: ['1p', '100p']
+  Rload: ['10k']
+  Vcm: [0.75, 0.7, 0.8]
+tests:
+  inverter_tb_dc_vout:
+    engine: ngspice
+    op1.vout:
+      typ: 0.75
+      unit: 'V'
+    dc_signals: [dc1.vin, dc1.vout]
+  inverter_tb_ac_ol:
+    engine: ngspice
+    Adc_ol_db: {}
+    fc: {}
+    UGB: {}
+    PM: {}
+    ac_signals: [vout]
+  inverter_tb_tran:
+    engine: ngspice
+    transient_signals: [vin, vout]

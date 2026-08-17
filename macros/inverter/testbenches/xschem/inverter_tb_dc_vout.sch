@@ -6,8 +6,8 @@ S {}
 F {}
 E {}
 B 2 1660 -720 2460 -320 {flags=graph
-y1=0
-y2=1.5
+y1=0.6
+y2=2.1
 ypos1=0
 ypos2=2
 divy=5
@@ -29,8 +29,8 @@ logy=0
 linewidth_mult=3
 autoload=0}
 B 2 1660 -1160 2460 -760 {flags=graph
-y1=-0.0008
-y2=-7.4e-10
+y1=0.00031999895
+y2=0.0011199982
 ypos1=0
 ypos2=2
 divy=5
@@ -67,10 +67,34 @@ N 1220 -860 1320 -860 {lab=vout}
 N 1320 -780 1320 -760 {lab=GND}
 N 1080 -960 1080 -900 {lab=VDD}
 N 1080 -820 1080 -760 {lab=GND}
-C {devices/code_shown.sym} 60 -1250 0 0 {name=NGSPICE
+C {devices/code_shown.sym} 20 -1670 0 0 {name=NGSPICE
 only_toplevel=true 
 value="
-.include ../../../netlist/pex/inverter_magic_pex_3.spice
+
+* \{% set NL_raw %\}
+
+* \{% endset %\}
+* \{% set NL = NL_raw | replace('*', '') %\}
+
+* \{% if True %\}
+
+* ==============================================
+* this section inserts chipify parameters
+* ==============================================
+
+* \{\{ NL \}\}.param VDD = \{\{ VDD \}\}
+* \{\{ NL \}\}.param temp = \{\{ temp \}\}
+* \{\{ NL \}\}.param Cload = \{\{ Cload \}\}
+* \{\{ NL \}\}.param Rload = \{\{ Rload \}\}
+* \{\{ NL \}\}.param Vcm = \{\{ Vcm \}\}
+
+* \{% else %\}
+
+* ==============================================
+* parameter definition for manual execution 
+* begins here
+* ==============================================
+
 .param VDD=1.5
 .csparam VDD=VDD
 .param Vcm=VDD/2
@@ -78,6 +102,14 @@ value="
 .param temp=27
 .param Cload=10p
 .param Rload=1k
+.include ../../../netlist/pex/inverter_magic_pex_3.spice
+
+* \{% endif %\}
+* ==============================================
+* simulator commands, common for manual
+* execution and chipify
+* ==============================================
+
 .options savecurrents klu method=gear reltol=1e-3 abstol=1e-15 gmin=1e-15
 .control
 
@@ -95,6 +127,10 @@ remzerovec
 write @schname\\\\.raw
 set appendwrite
 
+* ==============================================
+* Post processing, only manual execution
+* ==============================================
+* \{% if False %\}
 * Plotting
 plot vin vout
 
@@ -107,6 +143,8 @@ unset appendwrite
 set wr_vecnames
 set wr_singlescale
 wrdata ../plot_simulations/data/@schname\\\\.txt v(vin) v(vout)
+
+* \{% endif %\}
 
 *quit
 .endc
@@ -156,7 +194,7 @@ spice_ignore=true}
 C {vdd.sym} 1080 -960 0 0 {name=l4 lab=VDD}
 C {devices/gnd.sym} 1220 -760 0 0 {name=l5 lab=GND}
 C {devices/gnd.sym} 1320 -760 0 0 {name=l6 lab=GND}
-C {devices/vsource.sym} 960 -810 0 0 {name=Vgsp value=0
+C {devices/vsource.sym} 960 -810 0 0 {name=Vgsp value=\{Vcm\}
 }
 C {inverter.sym} 1080 -860 0 0 {name=x1
 }
