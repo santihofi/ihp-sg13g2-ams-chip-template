@@ -67,7 +67,7 @@ N 1220 -860 1320 -860 {lab=vout}
 N 1320 -780 1320 -760 {lab=GND}
 N 1080 -960 1080 -900 {lab=VDD}
 N 1080 -820 1080 -760 {lab=GND}
-C {devices/code_shown.sym} 20 -1670 0 0 {name=NGSPICE
+C {devices/code_shown.sym} 50 -1590 0 0 {name=NGSPICE
 only_toplevel=true 
 value="
 
@@ -76,39 +76,24 @@ value="
 * \{% endset %\}
 * \{% set NL = NL_raw | replace('*', '') %\}
 
-* \{% if True %\}
-
-* ==============================================
-* this section inserts chipify parameters
-* ==============================================
-
 * \{\{ NL \}\}.param VDD = \{\{ VDD \}\}
-* \{\{ NL \}\}.param temp = \{\{ temp \}\}
+* \{\{ NL \}\}.temp = \{\{ temp \}\}
 * \{\{ NL \}\}.param Cload = \{\{ Cload \}\}
 * \{\{ NL \}\}.param Rload = \{\{ Rload \}\}
 * \{\{ NL \}\}.param Vcm = \{\{ Vcm \}\}
 
-* \{% else %\}
-
-* ==============================================
-* parameter definition for manual execution 
-* begins here
-* ==============================================
+* \{% if False %\}
 
 .param VDD=1.5
 .csparam VDD=VDD
 .param Vcm=VDD/2
 .csparam Vcm=Vcm
-.param temp=27
+.temp=27
 .param Cload=10p
 .param Rload=1k
 .include ../../../netlist/pex/inverter_magic_pex_3.spice
 
 * \{% endif %\}
-* ==============================================
-* simulator commands, common for manual
-* execution and chipify
-* ==============================================
 
 .options savecurrents klu method=gear reltol=1e-3 abstol=1e-15 gmin=1e-15
 .control
@@ -127,10 +112,8 @@ remzerovec
 write @schname\\\\.raw
 set appendwrite
 
-* ==============================================
-* Post processing, only manual execution
-* ==============================================
 * \{% if False %\}
+
 * Plotting
 plot vin vout
 

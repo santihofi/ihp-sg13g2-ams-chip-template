@@ -63,20 +63,13 @@ N 1260 -760 1260 -740 {lab=GND}
 N 1360 -760 1360 -740 {lab=GND}
 N 1120 -940 1120 -880 {lab=VDD}
 N 1120 -800 1120 -740 {lab=GND}
-C {devices/code_shown.sym} 10 -1730 0 0 {name=NGSPICE
+C {devices/code_shown.sym} 50 -1620 0 0 {name=NGSPICE
 only_toplevel=true 
 value="
-
 * \{% set NL_raw %\}
 
 * \{% endset %\}
 * \{% set NL = NL_raw | replace('*', '') %\}
-
-* \{% if True %\}
-
-* ==============================================
-* this section inserts chipify parameters
-* ==============================================
 
 * \{\{ NL \}\}.param VDD = \{\{ VDD \}\}
 * \{\{ NL \}\}.temp = \{\{ temp \}\}
@@ -84,12 +77,7 @@ value="
 * \{\{ NL \}\}.param Rload = \{\{ Rload \}\}
 * \{\{ NL \}\}.param Vcm = \{\{ Vcm \}\}
 
-* \{% else %\}
-
-* ==============================================
-* parameter definition for manual execution 
-* begins here
-* ==============================================
+* \{% if False %\}
 
 .include ../../../netlist/pex/inverter_magic_pex_3.spice
 .param VDD=1.5
@@ -99,10 +87,6 @@ value="
 .param Rload=1k
 
 * \{% endif %\}
-* ==============================================
-* simulator commands, common for manual
-* execution and chipify
-* ==============================================
 
 .options savecurrents klu method=gear reltol=1e-4 abstol=1e-15 gmin=1e-15
 .control
@@ -150,9 +134,6 @@ meas ac arg_0dB find Aol_arg when Aol_dB=0
 let PM = 180-abs(arg_0dB)
 print PM
 
-* ==============================================
-* Post processing, only manual execution
-* ==============================================
 * \{% if False %\}
 
 * Plotting
