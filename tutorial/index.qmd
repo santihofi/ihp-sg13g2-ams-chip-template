@@ -45,6 +45,7 @@ This tutorial is a step-by-step walk-through of the open-source analog-mixed sig
   - Schematic entry in [Xschem](https://github.com/StefanSchippers/xschem)
   - Simulation with [Ngspice](https://github.com/danchitnis/ngspice-sf-mirror) and [VACASK](https://codeberg.org/arpadbuermen/VACASK)
   - Monte Carlo / mismatch characterisation with [CACE](https://github.com/fossi-foundation/cace)
+  - Corner sweeps and yield analysis with [Chipify](https://chipify.io/)
   - Layout in [KLayout](https://github.com/KLayout/klayout)
   - Verification with DRC, LVS, PEX using [KLayout](https://github.com/KLayout/klayout), [Magic](https://github.com/rtimothyedwards/magic) + [Netgen](https://github.com/rtimothyedwards/netgen)
 - [Top-level assembly and padframe generation](#sec-top) with logos and fill structures using SystemVerilog and the [LibreLane](https://github.com/librelane/librelane) flow.
@@ -141,7 +142,7 @@ This Makefile-driven repository simulates, builds, and fully verifies (DRC, LVS,
 
 - [**LibreLane**](https://github.com/librelane/librelane) for digital macro hardening, padframe generation and top-level assembly
 - [**Xschem**](https://github.com/StefanSchippers/xschem) for schematic entry
-- [**Ngspice**](https://github.com/danchitnis/ngspice-sf-mirror), [**VACASK**](https://codeberg.org/arpadbuermen/VACASK) and [**CACE**](https://github.com/fossi-foundation/cace) for analog simulation
+- [**Ngspice**](https://github.com/danchitnis/ngspice-sf-mirror), [**VACASK**](https://codeberg.org/arpadbuermen/VACASK), [**CACE**](https://github.com/fossi-foundation/cace) and [**Chipify**](https://chipify.io/) for analog simulation
 - [**KLayout**](https://github.com/KLayout/klayout) for viewing and routing of the layout
 - [**Magic**](https://github.com/rtimothyedwards/magic) + [**Netgen**](https://github.com/rtimothyedwards/netgen) and [**KLayout**](https://github.com/KLayout/klayout) for DRC, LVS and PEX verification
 - **SystemVerilog**, [**cocotb**](https://github.com/cocotb/cocotb), [**GTKWave**](https://github.com/gtkwave/gtkwave) and [**Surfer**](https://gitlab.com/surfer-project/surfer) for digital simulation
@@ -263,6 +264,7 @@ The [inverter Makefile](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/
 | ----------------------------------- | ----------------------------------------------------------------- |
 | `make sim-xschem TB=<tb>` / `make sim-view-xschem SCRIPT=<script>` | Run a specific Xschem testbench (batch mode) and plot its results with Python. |
 | `make sim-cace`                                   | Run [CACE](https://github.com/fossi-foundation/cace) Monte-Carlo / mismatch characterisations. |
+| `make sim-chipify`                                | Run [Chipify](https://chipify.io/) corner sweeps with yield analysis over all Xschem testbenches. |
 | `make klayout-drc` / `magic-drc` (`DRC_LEVEL=<precheck|macro|regular>`) | Run DRC using KLayout or Magic.                       |
 | `make klayout-lvs` / `magic-lvs`                  | Run LVS using KLayout or Magic + Netgen.                                    |
 | `make klayout-pex` / `magic-pex` (`EXT_MODE=<1|2|3>`) | Run parasitic extraction in C, CC, or full-RC mode.                     |
@@ -457,7 +459,8 @@ The [`inverter`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/ma
 - Layout vs. Schematic ([LVS](https://en.wikipedia.org/wiki/Layout_versus_schematic)) with KLayout or Magic + Netgen,
 - Design Rule Checking ([DRC](https://en.wikipedia.org/wiki/Design_rule_checking)) with KLayout or Magic,
 - Parasitic Extraction ([PEX](https://en.wikipedia.org/wiki/Parasitic_extraction)) with Magic + Netgen,
-- [Monte Carlo](https://en.wikipedia.org/wiki/Monte_Carlo_method) simulation of process and mismatch variations with CACE.
+- [Monte Carlo](https://en.wikipedia.org/wiki/Monte_Carlo_method) simulation of process and mismatch variations with CACE,
+- corner sweeps of supply, temperature, bias, and load with yield analysis using Chipify.
 
 Two instances are used in the chip core. One is used as a 4-channel digital inverter (`inverter1`), and the other as a 2-channel analog inverter (`inverter2`). See the [chip specifications](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/blob/main/doc/specifications.md) for the full picture.
 
@@ -476,7 +479,7 @@ The inverter design files are located in [`macros/inverter/`](https://github.com
 | [`testbenches/xschem/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/testbenches/xschem/) | Transient, ac open-loop, dc input sweep, and top-level transient testbenches.      |
 | [`netlist/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/netlist/)       | `schematic/` (CDL for KLayout LVS / SPICE for Magic + Netgen LVS), `layout/` (extracted for LVS), `pex/` (SPICE).           |
 | [`scripts/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/scripts/)       | Sizing notebooks, layout rendering.                 |
-| [`verification/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/verification/) | `drc/`, `lvs/`, and `cace/` (process, mismatch, supply sweeps).                       |
+| [`verification/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/verification/) | `drc/`, `lvs/`, `cace/` (process, mismatch, supply sweeps), and `chipify/` (corner sweeps, yield analysis). |
 | [`final/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/final/)           | Build deliverables for the top-level integration (LEF, LIB, Verilog stub, GDS).          |
 | [`render/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/render/)         | Macro renders for documentation.                                                         |
 
@@ -532,7 +535,7 @@ The Makefile target `sim-view-xschem` calls the Python plotters in [`testbenches
 ![Plotted simulation result of `inverter_top_tb_tran`.](fig/inverter_top/inverter_top_tb_tran_sim.svg){#fig-inverter-top-tb-tran-sim width=80%}
 
 ::: {.callout-tip}
-The full simulation suite, including all four testbenches plus the CACE flow (see @sec-cace), is triggered with `make sim-all`.
+The full simulation suite, including all four testbenches plus the CACE flow (see @sec-cace) and the chipify corner sweeps (see @sec-chipify), is triggered with `make sim-all`.
 :::
 
 ## Schematic-Level Drawing
@@ -589,6 +592,171 @@ Note that the above process and mismatch variation results are poor for an analo
 
 ::: {.callout-tip}
 In the `inverter.yaml` characterisation file, more parameter sweeps can be added, for example, across temperature, supply voltages or load capacitance.
+:::
+
+## Corner Sweeps and Yield Analysis (Chipify) {#sec-chipify}
+
+[Chipify](https://chipify.io/) (see [GitHub](https://github.com/santihofi/chipify)) is an automation wrapper around Xschem and Ngspice. While CACE (see @sec-cace) characterises the macro statistically with Monte-Carlo runs, chipify sweeps the very same Xschem testbenches over a user-defined parameter grid, runs all cases in parallel on the available CPU cores, and collects the measured scalars, the raw waveforms, and a pass/fail yield in one result table. The complete flow is driven by a *datasheet*, a single YAML file that lists the parameters to sweep and the testbenches to run.
+
+```sh
+make sim-chipify
+```
+
+The target enters [`verification/chipify/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/verification/chipify/) and calls `chipify-cli --batch ./datasheets`, so every datasheet in that folder is simulated in one pass. The step is also part of `make sim-all` and therefore of `make all`. A single datasheet can also be run explicitly, and the same project can be opened in the graphical front end.
+
+```sh
+cd macros/inverter/verification/chipify
+chipify-cli -c datasheets/inverter_corner.yaml   # run a single datasheet
+chipify-cli --help                               # report and CI export options (JSON, Markdown)
+chipify                                          # interactive Qt GUI
+```
+
+::: {.callout-note}
+Chipify is a Python package (Python 3.11 or newer) and is not part of the PDK. If `chipify-cli` is not found inside the container, install it with `python3 -m pip install chipify`.
+:::
+
+### Chipify Project Layout
+
+A chipify project is a plain folder with a datasheet, a settings file, and an output directory.
+
+| File / Folder                                     | Content                                                                                  |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [`datasheets/inverter_corner.yaml`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/blob/main/macros/inverter/verification/chipify/datasheets/inverter_corner.yaml) | The datasheet: parameter grid, testbenches, measurements, and specs. Every `*.yaml` in this folder is picked up by `--batch`. |
+| [`settings.json`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/blob/main/macros/inverter/verification/chipify/settings.json) | Simulator engine, core count, per-run timeout, folder paths, and the GUI plot configuration. |
+| [`xschemrc`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/blob/main/macros/inverter/verification/chipify/xschemrc) | Xschem start-up file used while chipify netlists the testbenches. It adds [`schematic/xschem/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/schematic/xschem/) to the Xschem library path, so `inverter.sym` is resolved. |
+| `out/`                                            | All results of a run. The folder is git-ignored, since it is regenerated on every run.   |
+
+The most important entries of `settings.json` are listed below. All folder paths are relative to the chipify project folder, and an empty string selects the default.
+
+| Key                                     | Value in this project      | Meaning                                                                 |
+| --------------------------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| `simulator_engine`                      | `ngspice`                  | Default engine. A test can override it with `engine:`. VACASK is supported as well through `vacask_binary`, `vacask_pdk_dir`, and `vacask_netlist_source`. |
+| `num_cores`                             | `null`                     | Number of worker processes. `null` uses all available cores.            |
+| `sim_timeout_sec`                       | `10`                       | Timeout per single run. Increase it for long transient analyses.        |
+| `tb_dir`                                | `../../testbenches/xschem` | Where the `<test>.sch` testbenches are looked up.                        |
+| `in_dir` / `out_dir` / `work_dir`       | empty                      | Datasheet, result, and staging folder. Empty means `datasheets/`, `out/`, and `work/`. |
+| `multiplot_config`, `theme`, `font_size` | histogram of `op1.vout`   | GUI-only settings, restored when the project is opened with `chipify`.   |
+
+::: {.callout-warning}
+The chipify `xschemrc` points to the schematic library with the absolute path `/foss/designs/ihp-sg13g2-ams-chip-template/macros/inverter/schematic/xschem`, because the file is copied to a temporary RAM-disk folder before Xschem is called, where a relative path no longer resolves. Adjust this line if the repository is cloned to a different location inside the container.
+:::
+
+### The Datasheet
+
+The datasheet [`inverter_corner.yaml`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/blob/main/macros/inverter/verification/chipify/datasheets/inverter_corner.yaml) sweeps the operating conditions of the inverter over all three schematic-level testbenches.
+
+```yaml
+parameters:
+  temp: [22, -40, 100]
+  VDD: [1.5, 1.45, 1.55]
+  Cload: ['1p', '100p']
+  Rload: ['10k']
+  Vcm: [0.75, 0.7, 0.8]
+tests:
+  inverter_tb_dc_vout:
+    engine: ngspice
+    op1.vout:
+      typ: 0.75
+      unit: 'V'
+    dc_signals: [dc1.vin, dc1.vout]
+  inverter_tb_ac_ol:
+    engine: ngspice
+    Adc_ol_db: {}
+    fc: {}
+    UGB: {}
+    PM: {}
+    ac_signals: [vout]
+  inverter_tb_tran:
+    engine: ngspice
+    transient_signals: [vin, vout]
+```
+
+The `parameters:` block is the sweep grid. Chipify builds the full cross product of all listed values, which is $3 \cdot 3 \cdot 2 \cdot 1 \cdot 3 = 54$ corner cases, and simulates every testbench for each of them.
+
+| Parameter | Values             | Meaning                                     |
+| --------- | ------------------ | ------------------------------------------- |
+| `temp`    | 22, -40, 100       | Simulation temperature in $^\circ$C.        |
+| `VDD`     | 1.5, 1.45, 1.55    | Supply voltage in V ($\pm\,3.3\,\%$).       |
+| `Cload`   | 1p, 100p           | Load capacitance.                           |
+| `Rload`   | 10k                | Load resistance.                            |
+| `Vcm`     | 0.75, 0.7, 0.8     | Input common-mode (bias) voltage in V.      |
+
+::: {.callout-note}
+Values carrying an engineering suffix (`1p`, `10k`) are quoted so that YAML keeps them as strings and they reach the SPICE deck verbatim. Plain numbers such as `1.5` or `-40` can be written unquoted.
+:::
+
+Each entry below `tests:` is one testbench, named exactly like the schematic in `tb_dir` (without the `.sch` suffix). Inside a test, the following keys are used.
+
+| Key                                              | Meaning                                                                                 |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `engine`                                          | Simulator for this testbench (`ngspice` or `vacask`).                                    |
+| Measurement name, e.g. `Adc_ol_db`, `fc`, `UGB`, `PM`, `op1.vout` | One scalar per run, read back from the Ngspice vector of the same name. An empty `{}` captures the value without limits, while `typ`, `min`, `max`, and `unit` add a target value, pass/fail limits, and a unit. |
+| `dc_signals`, `ac_signals`, `transient_signals`   | Waveforms that are written to a CSV file per run. Vectors may be prefixed with the Ngspice plot name (`op1.`, `dc1.`, `ac1.`, `tran1.`). |
+
+::: {.callout-tip}
+`op1.vout` above only declares a typical value, so no run can fail on it and the reported yield is always 100 %. Add `min:` and `max:` to a measurement to turn it into a real specification. The `*_pass` columns of the result table and the yield in the run metadata then show directly in which corners the macro violates its specification.
+:::
+
+### Preparing a Testbench for Chipify
+
+Chipify netlists each testbench with Xschem and renders the resulting deck as a [Jinja2](https://jinja.palletsprojects.com/) template, replacing the sweep parameters per run. To keep the very same testbench usable for interactive work, all template code is written as Ngspice comments. The `NGSPICE` code block of [`inverter_tb_ac_ol.sch`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/blob/main/macros/inverter/testbenches/xschem/inverter_tb_ac_ol.sch) starts as follows.
+
+```spice
+* {% set NL_raw %}
+
+* {% endset %}
+* {% set NL = NL_raw | replace('*', '') %}
+
+* {{ NL }}.param VDD = {{ VDD }}
+* {{ NL }}.temp = {{ temp }}
+* {{ NL }}.param Cload = {{ Cload }}
+* {{ NL }}.param Rload = {{ Rload }}
+* {{ NL }}.param Vcm = {{ Vcm }}
+
+* {% if False %}
+
+.include ../../../netlist/pex/inverter_magic_pex_3.spice
+.param VDD=1.5
+.param Vcm=VDD/2
+.temp=27
+.param Cload=10p
+.param Rload=1k
+
+* {% endif %}
+```
+
+- **Line-break trick.** `NL_raw` captures a block that contains nothing but a line break and a comment character, and `replace('*', '')` removes that comment character. `NL` therefore expands to a bare newline, so `* {{ NL }}.param VDD = {{ VDD }}` renders to a lone `*` on one line followed by a genuine `.param VDD = 1.45` statement on the next. This is what turns a commented-out line into live SPICE, but only when chipify renders the deck.
+- **Disabling the manual settings.** Everything between `* {% if False %}` and `* {% endif %}` is deleted by Jinja2 before the deck is simulated. The fixed operating conditions are therefore only used when the testbench is simulated by hand, and are replaced by the swept values during a chipify run. The same guard is placed around the `plot` commands and the `wrdata` call at the end of the `.control` block, so that a batch run neither opens plot windows nor overwrites the reference data in [`plot_simulations/data/`](https://github.com/iic-jku/ihp-sg13g2-ams-chip-template/tree/main/macros/inverter/testbenches/xschem/plot_simulations/data).
+- **Brace escaping.** Inside the Xschem `code_shown` symbol, every brace must be escaped (`\{\{ VDD \}\}`, `\{% if False %\}`), because Xschem uses braces to delimit the attribute string itself. The netlister removes the backslashes, so the generated `.spice` deck contains the plain Jinja2 syntax shown above.
+
+Before the template is rendered, chipify scans the netlist as plain text and injects its data capture into the **first** `.control` block: `set num_threads=1` right after the `.control` line, and `echo MY_DATA:$&<measurement>`, `setplot <analysis>1`, and `wrdata` just before the `.endc` line. Three rules follow from this.
+
+1. A testbench should contain exactly one `.control` block, and no comment before it may spell out the literal keywords `.control` or `.endc`, otherwise the injection anchors on the comment line and the run reports no data.
+2. Every measurement name used in the datasheet must exist as an Ngspice vector at the end of the run, produced by a `meas` or a `let` statement, because chipify reads it back with `$&<name>`.
+3. `set wr_vecnames` must not be active any more when the injected `wrdata` executes. Chipify writes its own CSV header, so the Ngspice header would land in the captured waveform file as an additional data row.
+
+::: {.callout-tip}
+The rendered deck of every run is archived, which makes debugging a failing corner straightforward: open the template in `out/history/run_<timestamp>_templates/` and check what Jinja2 actually produced.
+:::
+
+### Results
+
+A run of the 54 corner cases of this datasheet takes roughly ten seconds on a machine with a dozen cores and writes everything below `out/`.
+
+| Path                                                         | Content                                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `out/simulation_results.csv`                                  | The result table, one row per corner case: all swept parameters, `run_id`, every measurement with its `*_pass` flag, the per-testbench `*_overall_pass`, and `global_pass`. |
+| `out/analysis_data/<analysis>/<timestamp>/run_<n>__<tb>.csv`   | The captured waveforms, one file per run, grouped by analysis type (`ac`, `dc`, `transient`). The `.latest` file in each analysis folder points to the most recent time-stamped folder. |
+| `out/history/run_<timestamp>.meta.json`                        | Run metadata: tool versions, host, duration, number of valid runs, and the global yield. |
+| `out/history/run_<timestamp>_templates/`                       | The rendered SPICE deck of every testbench of that run.                        |
+| `out/chipify.log`                                              | Full log of all runs, useful to see which Xschem or Ngspice call failed.       |
+
+::: {.callout-tip}
+The result table is a plain CSV, so it can be post-processed with the Python plotters of this repository, opened in the chipify GUI for histograms, scatter plots, and corner yield matrices, or exported as a Markdown or JSON report for a CI job.
+:::
+
+::: {.callout-note}
+Chipify and CACE overlap in purpose but answer different questions. CACE (see @sec-cace) produces the statistical picture, that is, how far process and mismatch spread a parameter. Chipify produces the deterministic picture, that is, whether the circuit still meets its specification in every combination of supply, temperature, bias, and load. Running both is the recommended practice for an analog macro.
 :::
 
 ## Transistor Sizing
@@ -792,7 +960,7 @@ The full verification, build, and simulation chain is run with the following com
 make all
 ```
 
-This calls `klayout-verify-all`, `magic-verify-all`, `build-top`, and `sim-all` (Xschem + CACE) in sequence. The simulations run last, so the `inverter_top` testbench includes the PEX netlist produced by this run. Depending on the hardware used, a full pass can take a few minutes, especially the CACE simulation step.
+This calls `klayout-verify-all`, `magic-verify-all`, `build-top`, and `sim-all` (Xschem + CACE + chipify) in sequence. The simulations run last, so the `inverter_top` testbench includes the PEX netlist produced by this run. Depending on the hardware used, a full pass can take a few minutes, especially the CACE simulation step.
 
 
 # Bondpad and Logo Implementation {#sec-ip}
