@@ -33,3 +33,16 @@ sim_build/
 /macros/counter/fpga/counter_top_generic*
 /macros/counter/fpga/counter_top*.svg
 /macros/counter/fpga/counter_top*.pdf
+/macros/counter/verification
+/macros/counter/final
+/macros/counter/final
+/macros/counter/verification
+/macros/inverter/pyopus/evaluate
+/macros/inverter/pyopus/optimize
+/macros/inverter/verification/chipify/out
+/verification/reports
+/macros/counter/netlist/pnl
+/verification/reports
+
+/macros/counter/verification
+/ip/sg13g2_ip__bondpad_70x70

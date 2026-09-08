@@ -1,0 +1,4 @@
+.subckt inverter VDD vin vout VSS
+XM1 vout vin VSS VSS sg13_lv_nmos w={w_n} l={l_n} ng=20 m=1 mm_ok=1
+XM2 vout vin VDD VDD sg13_lv_pmos w={w_p} l={l_p} ng=20 m=1 mm_ok=1
+.ends

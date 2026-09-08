@@ -1,0 +1,6 @@
+C1 vout GND {cload}
+V1 VDD GND {vdd}
+V2 vin GND dc=0.75 ac=1
+x1 VDD vin vout GND inverter
+.GLOBAL GND
+.end

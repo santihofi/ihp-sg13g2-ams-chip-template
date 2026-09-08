@@ -1,0 +1,2681 @@
+{
+  "info": {
+    "version": "1.1",
+    "description": ""
+  },
+  "files": [
+    [
+      "/foss/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib",
+      {
+        "external": true,
+        "content": ""
+      }
+    ],
+    [
+      "inverter.spice",
+      {
+        "external": true,
+        "content": ""
+      }
+    ],
+    [
+      "inverter_tb.spice",
+      {
+        "external": true,
+        "content": ""
+      }
+    ]
+  ],
+  "heads": [
+    [
+      "ngspice",
+      {
+        "simulator": "Ngspice",
+        "settings": [],
+        "options": [],
+        "params": [],
+        "moddefs": [
+          [
+            "dut",
+            "inverter.spice",
+            ""
+          ],
+          [
+            "tb",
+            "inverter_tb.spice",
+            ""
+          ],
+          [
+            "moslvtt",
+            "cornerMOSlv.lib",
+            "mos_tt"
+          ],
+          [
+            "moslvss",
+            "cornerMOSlv.lib",
+            "mos_ss"
+          ],
+          [
+            "moslvff",
+            "cornerMOSlv.lib",
+            "mos_ff"
+          ],
+          [
+            "moslvsf",
+            "cornerMOSlv.lib",
+            "mos_sf"
+          ],
+          [
+            "moslvfs",
+            "cornerMOSlv.lib",
+            "mos_fs"
+          ]
+        ]
+      }
+    ]
+  ],
+  "variables": [],
+  "analyses": [
+    [
+      "op",
+      {
+        "head": "ngspice",
+        "modules": [
+          [
+            "dut"
+          ],
+          [
+            "tb"
+          ]
+        ],
+        "options": [],
+        "params": [],
+        "saves": [],
+        "command": "op()"
+      }
+    ],
+    [
+      "ac",
+      {
+        "head": "ngspice",
+        "modules": [
+          [
+            "dut"
+          ],
+          [
+            "tb"
+          ]
+        ],
+        "options": [],
+        "params": [],
+        "saves": [],
+        "command": "ac(1,1e10,'dec',10)"
+      }
+    ]
+  ],
+  "measures": [
+    [
+      "vcm_op",
+      {
+        "analysis": "op",
+        "depends": [],
+        "expression": "v('vout')",
+        "vector": false,
+        "components": "",
+        "lower": "0.7",
+        "upper": "0.8",
+        "norm": "0.75"
+      }
+    ],
+    [
+      "gain_ol",
+      {
+        "analysis": "ac",
+        "depends": [],
+        "expression": "ndx=m.IatXval(np.abs(scale()), 10.0)[0]\n__result=m.XatI(m.ACmag(m.ACtf(v('vout'), v('vin'))), ndx)",
+        "vector": false,
+        "components": "",
+        "lower": "20",
+        "upper": "",
+        "norm": ""
+      }
+    ]
+  ],
+  "designpar": [
+    [
+      "w_n",
+      "20e-6",
+      "1e-6",
+      "50e-6"
+    ],
+    [
+      "w_p",
+      "120e-6",
+      "5e-6",
+      "200e-6"
+    ],
+    [
+      "l_n",
+      "1e-6",
+      "0.13e-6",
+      "10e-6"
+    ],
+    [
+      "l_p",
+      "1e-6",
+      "0.13e-6",
+      "10e-6"
+    ]
+  ],
+  "oppar": [
+    [
+      "vdd",
+      "1.5",
+      "1.45",
+      "1.55"
+    ],
+    [
+      "temp",
+      "22",
+      "-20",
+      "80"
+    ],
+    [
+      "cload",
+      "100e-15",
+      "1e-15",
+      "1000e-15"
+    ]
+  ],
+  "statpar": [],
+  "tasks": [
+    [
+      "evaluate",
+      {
+        "type": "cbd",
+        "description": "",
+        "requirements": [
+          [
+            true,
+            "vcm_op",
+            "0.7",
+            "0.8",
+            "0.75",
+            ""
+          ],
+          [
+            true,
+            "gain_ol",
+            "20",
+            "",
+            "",
+            ""
+          ]
+        ],
+        "designpar": [
+          [
+            "w_n",
+            "20e-6",
+            "1e-6",
+            "50e-6"
+          ],
+          [
+            "w_p",
+            "120e-6",
+            "5e-6",
+            "200e-6"
+          ],
+          [
+            "l_n",
+            "1e-6",
+            "0.13e-6",
+            "10e-6"
+          ],
+          [
+            "l_p",
+            "1e-6",
+            "0.13e-6",
+            "10e-6"
+          ]
+        ],
+        "corners": [
+          [
+            "c1_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c2_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c3_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c4_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c5_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c6_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c7_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c8_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c9_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c10_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c11_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c12_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c13_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c14_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c15_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c16_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c17_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c18_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c19_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c20_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c21_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c22_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c23_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c24_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c25_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c26_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c27_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c28_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c29_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c30_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c31_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c32_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c33_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c34_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c35_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c36_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c37_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c38_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c39_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c40_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ]
+        ],
+        "settings": {
+          "aggregatorsettings": [],
+          "evaluatorsettings": [],
+          "failurepenalty": "1e6",
+          "forwardsolution": true,
+          "maxiter": "",
+          "stoptol": "1e-5",
+          "initialstep": "0.25",
+          "method": "noneFull",
+          "optimizersettings": [],
+          "relevantcorners": true,
+          "stopsatisfied": true,
+          "tradeoffmultiplier": "0"
+        },
+        "output": {
+          "aggregatordebug": "0",
+          "evaluatordebug": "0",
+          "optimizerdebug": "0",
+          "keepfiles": false,
+          "saveallresults": false,
+          "savewaveforms": "verification",
+          "simulatordebug": "2",
+          "taskdebug": "1"
+        },
+        "mpi": {
+          "processors": "",
+          "mirror": true,
+          "persistent": true,
+          "vmdebug": "0",
+          "cosdebug": "0"
+        }
+      }
+    ],
+    [
+      "optimize",
+      {
+        "type": "cbd",
+        "description": "",
+        "requirements": [
+          [
+            true,
+            "vcm_op",
+            "0.7",
+            "0.8",
+            "0.75",
+            ""
+          ],
+          [
+            true,
+            "gain_ol",
+            "20",
+            "",
+            "",
+            ""
+          ]
+        ],
+        "designpar": [
+          [
+            "w_n",
+            "20e-6",
+            "1e-6",
+            "50e-6"
+          ],
+          [
+            "w_p",
+            "120e-6",
+            "5e-6",
+            "200e-6"
+          ],
+          [
+            "l_n",
+            "1e-6",
+            "0.13e-6",
+            "10e-6"
+          ],
+          [
+            "l_p",
+            "1e-6",
+            "0.13e-6",
+            "10e-6"
+          ]
+        ],
+        "corners": [
+          [
+            "c1_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c2_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c3_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c4_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c5_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c6_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c7_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c8_moslvff",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvff"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c9_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c10_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c11_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c12_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c13_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c14_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c15_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c16_moslvfs",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvfs"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c17_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c18_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c19_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c20_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c21_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c22_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c23_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c24_moslvsf",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvsf"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c25_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c26_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c27_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c28_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c29_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c30_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c31_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c32_moslvss",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvss"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c33_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c34_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c35_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c36_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.45"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c37_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c38_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "-20"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c39_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1e-15"
+                ]
+              ]
+            }
+          ],
+          [
+            "c40_moslvtt",
+            {
+              "heads": [
+                [
+                  "ngspice"
+                ]
+              ],
+              "modules": [
+                [
+                  "moslvtt"
+                ]
+              ],
+              "params": [
+                [
+                  "vdd",
+                  "1.55"
+                ],
+                [
+                  "temp",
+                  "80"
+                ],
+                [
+                  "cload",
+                  "1000e-15"
+                ]
+              ]
+            }
+          ]
+        ],
+        "settings": {
+          "aggregatorsettings": [],
+          "evaluatorsettings": [],
+          "failurepenalty": "1e6",
+          "forwardsolution": true,
+          "maxiter": "",
+          "stoptol": "1e-5",
+          "initialstep": "0.25",
+          "method": "ParallelSADE",
+          "optimizersettings": [],
+          "relevantcorners": true,
+          "stopsatisfied": true,
+          "tradeoffmultiplier": "0"
+        },
+        "output": {
+          "aggregatordebug": "0",
+          "evaluatordebug": "0",
+          "optimizerdebug": "0",
+          "keepfiles": false,
+          "saveallresults": false,
+          "savewaveforms": "verification",
+          "simulatordebug": "2",
+          "taskdebug": "1"
+        },
+        "mpi": {
+          "processors": "",
+          "mirror": true,
+          "persistent": true,
+          "vmdebug": "0",
+          "cosdebug": "0"
+        }
+      }
+    ]
+  ]
+}
